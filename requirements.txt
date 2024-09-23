@@ -8,4 +8,5 @@ aiohttp
 urllib3
 pyromod
 dnspython
-pytgcalls
+pymongo==3.12.0
+py-tgcalls==1.2.9
