@@ -6,9 +6,9 @@ import urllib3
 from pyrogram import filters
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from pyromod.exceptions import ListenerTimeout
-
+from config import SUDOERS
 from pyrogram import Client as app
-from config import OWNER_ID
+
 
 # Import your MongoDB database structure
 from HEROKUBOT.utils.pastebin import HEROKUbin
