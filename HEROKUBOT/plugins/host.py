@@ -9,10 +9,9 @@ from pyrogram import filters
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from pyromod.exceptions import ListenerTimeout
 
-from VIPMUSIC import app
-from VIPMUSIC.utils.database import save_app_info
+from pyrogram import Client as app
 from VIPMUSIC.utils.pastebin import VIPbin
-from VIPMUSIC.misc import SUDOERS
+from config import SUDOERS
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 HEROKU_API_URL = "https://api.heroku.com"
@@ -485,7 +484,7 @@ async def collect_app_info(message):
             ok = await message.reply_text(
                 convert_to_small_caps("⌛ Deploying. Please wait a moment...")
             )
-            await save_app_info(message.from_user.id, app_name)
+            
             await asyncio.sleep(200)
             await ok.delete()
             await message.reply_text(
