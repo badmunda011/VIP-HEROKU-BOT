@@ -10,7 +10,7 @@ from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from pyromod.exceptions import ListenerTimeout
 
 from pyrogram import Client as app
-from pyrogram import Client
+
 from HEROKUBOT.utils.pastebin import HEROKUbin
 from config import SUDOERS
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -312,7 +312,7 @@ async def ask_for_branch(callback_query, branches, default_branch):
 
 
 # This handles the /host command and displays the repo choice buttons
-@Client.on_message(filters.command("host") & filters.private & SUDOERS)
+@Client.on_message(filters.command("host") & filters.private)
 async def host_app(client, message):
     global app_name  # Declare global to use it everywhere
     REPO_URL = "https://github.com/THE-VIP-BOY-OP/VIP-MUSIC"
