@@ -24,5 +24,8 @@ MONGO_DB_URI = getenv("MONGO_DB_URI", None)
 
 HEROKU_API_KEY = getenv("HEROKU_API_KEY", "")
 
-OWNER_ID = getenv("OWNER_ID", "")
+SUDOERS = list(
+    map(int, getenv("OWNER_ID", "1808943146").split())
+)  # Input type must be interger
+
     
