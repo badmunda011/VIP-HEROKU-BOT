@@ -10,7 +10,7 @@ from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from pyromod.exceptions import ListenerTimeout
 
 from pyrogram import Client as app
-from VIPMUSIC.utils.pastebin import VIPbin
+from HEROKUBOT.utils.pastebin import HEROKUbin
 from config import SUDOERS
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
