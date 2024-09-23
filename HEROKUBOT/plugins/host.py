@@ -9,7 +9,8 @@ from pyrogram import filters
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from pyromod.exceptions import ListenerTimeout
 
-from pyrogram import Client as app
+from pyrogram import Client
+from HEROKUBOT import app
 from HEROKUBOT.utils.pastebin import HEROKUbin
 from config import SUDOERS
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
