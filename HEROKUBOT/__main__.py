@@ -29,6 +29,6 @@ class HEROKUBot(Client):
         print("Started Bot.")
 
 # To run the bot
-if __name__ == "__main__":
-    app = HEROKUBot()
-    app.run()
+
+app = HEROKUBot()
+    
