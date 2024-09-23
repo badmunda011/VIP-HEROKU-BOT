@@ -2,14 +2,17 @@ import os
 import logging
 import pyrogram
 from config import API_ID, API_HASH, BOT_TOKEN
+from pyromod.listen import Listen  # Import pyromod listen
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)
 
-
-if __name__ == "__main__" :
+if __name__ == "__main__":
     print("Starting Bot...")
+    
     plugins = dict(root="HEROKUBOT/plugins")
+    
+    # Initialize the bot client
     app = pyrogram.Client(
         "HEROKUBOT",
         bot_token=BOT_TOKEN,
@@ -17,4 +20,9 @@ if __name__ == "__main__" :
         api_hash=API_HASH,
         plugins=plugins
     )
+    
+    # Attach pyromod.listen to the Client
+    app.listen = Listen()
+
+    # Run the bot
     app.run()
