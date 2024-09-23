@@ -7,12 +7,11 @@ from pyrogram import filters
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from pyromod.exceptions import ListenerTimeout
 
-from VIPMUSIC import app
-from VIPMUSIC.misc import SUDOERS
-from VIPMUSIC.utils.database import delete_app_info
+from pyrogram import Client as app
+from config import OWNER_ID
 
 # Import your MongoDB database structure
-from VIPMUSIC.utils.pastebin import VIPbin
+from HEROKUBOT.utils.pastebin import HEROKUbin
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
