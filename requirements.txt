@@ -3,3 +3,4 @@ python-decouple
 requests
 python-dotenv
 motor
+TgCrypto
