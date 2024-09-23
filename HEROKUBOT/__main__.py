@@ -2,7 +2,7 @@ import os
 import logging
 import pyrogram
 from config import API_ID, API_HASH, BOT_TOKEN
-from pyromod.listen import Listen  # Import pyromod listen
+import pyromod.listen   # Import pyromod listen
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)
@@ -21,8 +21,7 @@ if __name__ == "__main__":
         plugins=plugins
     )
     
-    # Attach pyromod.listen to the Client
-    app.listen = Listen()
+    
 
     # Run the bot
     app.run()
