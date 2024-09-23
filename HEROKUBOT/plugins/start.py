@@ -1,9 +1,7 @@
 from pyrogram import Client, filters
 
 @Client.on_message(filters.command(["start"]))
-async def start(bot, update):
-    await bot.send_message(
-        chat_id=update.chat.id,
-        text="Hello there!",
-        reply_to_message_id=update.message_id
-    )
+async def start(client, message):
+    await client.send_message(chat_id=message.chat.id, "Hello there!\n\n I am heroku control bot")
+        
+    
