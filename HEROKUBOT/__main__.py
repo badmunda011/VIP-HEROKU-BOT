@@ -8,28 +8,19 @@ logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s'
                     level=logging.WARNING)
 
 # Initialize the bot client
-class HEROKUBot(Client):
-    def __init__(self):
-        super().__init__(
-            "HEROKUBOT",
-            api_id=API_ID,
-            api_hash=API_HASH,
-            bot_token=BOT_TOKEN,
-            plugins=dict(root="HEROKUBOT/plugins"),
-        )
-
-    # Run the bot
-    async def start(self):
-        await super().start()
-        get_me = await self.get_me()
-        self.username = get_me.username
-        self.id = get_me.id
-        self.name = self.me.first_name + " " + (self.me.last_name or "")
-        self.mention = self.me.mention
-        print("Started Bot.")
+if __name__ == "__main__" :
+    print("Starting Bot...")
+    plugins = dict(root="PyroBot/plugins")
+    app = pyrogram.Client(
+        "HEROKUBOT",
+        bot_token=BOT_TOKEN,
+        api_id=APP_ID,
+        api_hash=API_HASH,
+        plugins=plugins
+    )
+    app.run()
 
 # To run the bot
-app.run()
 
-app = HEROKUBot()
-    
+
+
