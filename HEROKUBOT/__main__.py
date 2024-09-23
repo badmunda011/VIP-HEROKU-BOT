@@ -11,7 +11,7 @@ logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s'
 # Initialize the bot client
 if __name__ == "__main__" :
     print("Starting Bot...")
-    plugins = dict(root="PyroBot/plugins")
+    plugins = dict(root="HEROKUBOT/plugins")
     app = pyrogram.Client(
         "HEROKUBOT",
         bot_token=BOT_TOKEN,
