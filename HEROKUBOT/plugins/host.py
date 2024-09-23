@@ -509,7 +509,7 @@ async def collect_app_info(message):
 
 
 @app.on_message(
-    filters.command(["heroku", "hosts", "hosted", "mybots", "myhost"]) & SUDOERS
+    filters.command(["heroku", "hosts", "hosted", "mybots", "myhost"])
 )
 async def get_deployed_apps(client, message):
     apps = await fetch_apps()
@@ -542,7 +542,7 @@ async def get_deployed_apps(client, message):
 # ============================DELETE APP==================================#
 
 
-@app.on_message(filters.command("deletehost") & filters.private & SUDOERS)
+@app.on_message(filters.command("deletehost") & filters.private &)
 async def delete_deployed_app(client, message):
     # Fetch the list of deployed apps for the user
     user_apps = await fetch_apps()
