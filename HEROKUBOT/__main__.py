@@ -29,6 +29,7 @@ class HEROKUBot(Client):
         print("Started Bot.")
 
 # To run the bot
+app.run()
 
 app = HEROKUBot()
     
