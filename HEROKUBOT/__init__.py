@@ -1,5 +1,4 @@
 import os
-import pyrogram
 import logging
 from pyrogram import Client, filters
 from config import API_ID, API_HASH, BOT_TOKEN, OWNER_ID, SUDOERS
@@ -10,7 +9,7 @@ logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s'
 
 # Initialize the bot client
 plugins = dict(root="HEROKUBOT/plugins")
-app = pyrogram.Client(
+app = Client(
     "HEROKUBOT",
     bot_token=BOT_TOKEN,
     api_id=API_ID,
