@@ -1,7 +1,7 @@
 import os
 import pyrogram
 import logging
-from pyrogram import Client
+from pyrogram import Client, filters
 from config import API_ID, API_HASH, BOT_TOKEN, OWNER_ID, SUDOERS
 import pyromod.listen  # Import pyromod listen
 
@@ -18,6 +18,7 @@ app = pyrogram.Client(
     plugins=plugins
 )
 
+SUDOERS = filters.user()
+
 for user_id in OWNER_ID:
-    if user_id not in OWNER_ID:
-        SUDOERS.add(user_id)
+    SUDOERS.add(user_id)
