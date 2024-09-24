@@ -17,7 +17,5 @@ app = Client(
     plugins=plugins
 )
 
-SUDOERS = filters.user()
 
-for user_id in OWNER_ID:
-    SUDOERS.add(user_id)
+
