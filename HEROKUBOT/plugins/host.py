@@ -508,7 +508,7 @@ async def collect_app_info(message):
 
 
 @app.on_message(
-    filters.command(["heroku", "hosts", "hosted", "mybots", "myhost"] & filters.user(SUDOERS))
+    filters.command(["heroku", "hosts", "hosted", "mybots", "myhost"]) & filters.user(SUDOERS)
 )
 async def get_deployed_apps(client, message):
     apps = await fetch_apps()
