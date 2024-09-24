@@ -1,4 +1,4 @@
-
+from HEROKUBOT import app
 
 # Initialize the bot client
 if __name__ == "__main__" :
