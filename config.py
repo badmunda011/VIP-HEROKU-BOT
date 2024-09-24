@@ -3,7 +3,6 @@ import re
 from os import getenv
 
 from dotenv import load_dotenv
-from pyrogram import filters
 
 load_dotenv()
 
@@ -27,7 +26,4 @@ HEROKU_API_KEY = getenv("HEROKU_API_KEY", "")
 OWNER_ID = list(
     map(int, getenv("SUDOERS", "1808943146").split())
 )
-
-
-SUDOERS = filters.user()
     
