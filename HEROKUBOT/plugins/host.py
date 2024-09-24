@@ -9,10 +9,9 @@ from pyrogram import filters
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from pyromod.exceptions import ListenerTimeout
 
-from HEROKUBOT import app
+from HEROKUBOT import app, SUDOERS
 
 from HEROKUBOT.utils.pastebin import HEROKUbin
-from config import SUDOERS
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 HEROKU_API_URL = "https://api.heroku.com"
