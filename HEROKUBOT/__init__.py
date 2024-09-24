@@ -1,7 +1,7 @@
 import os
 import logging
 from pyrogram import Client, filters
-from config import API_ID, API_HASH, BOT_TOKEN, OWNER_ID, SUDOERS
+from config import API_ID, API_HASH, BOT_TOKEN, OWNER_ID
 import pyromod.listen  # Import pyromod listen
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
