@@ -23,7 +23,5 @@ MONGO_DB_URI = getenv("MONGO_DB_URI", None)
 
 HEROKU_API_KEY = getenv("HEROKU_API_KEY", "")
 
-OWNER_ID = list(
-    map(int, getenv("SUDOERS", "1808943146").split())
-)
+OWNER_ID = getenv("OWNER_ID", "1808943146")
     
