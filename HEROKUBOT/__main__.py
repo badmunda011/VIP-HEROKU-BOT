@@ -1,5 +1,7 @@
-from HEROKUBOT import app
 import importlib
+import asyncio
+
+from HEROKUBOT import app
 
 async def main():
     print("Starting Bot.....")
