@@ -16,8 +16,5 @@ app = Client(
     api_hash=API_HASH,
     
 )
-SUDOERS = filters.user()
-SUDOERS.add(OWNER_ID)
-SUDOERS.add(7157974692)
 
 
