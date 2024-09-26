@@ -385,7 +385,7 @@ async def handle_repo_choice(client, callback_query):
             return
 
 
-@app.on_callback_query(filters.regex(r"branch_"))
+@app.on_callback_query(filters.regex(r"branch_") & filters.user(SUDOERS))
 async def handle_branch_selection(client, callback_query):
     global BRANCH_NAME
     BRANCH_NAME = callback_query.data.split("_")[1]
@@ -541,7 +541,7 @@ async def get_deployed_apps(client, message):
 # ============================DELETE APP==================================#
 
 
-@app.on_message(filters.command("deletehost") & filters.private & filters.user(SUDOERS))
+@app.on_message(filters.command("deletehost") & filters.private)
 async def delete_deployed_app(client, message):
     # Fetch the list of deployed apps for the user
     user_apps = await fetch_apps()
