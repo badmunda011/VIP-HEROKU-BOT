@@ -6,8 +6,7 @@ import urllib3
 from pyrogram import filters
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from pyromod.exceptions import ListenerTimeout
-from HEROKUBOT import app
-from config import OWNER_ID as SUDOERS
+from HEROKUBOT import app, SUDOERS
 
 # Import your MongoDB database structure
 from HEROKUBOT.utils.pastebin import HEROKUbin
@@ -215,7 +214,7 @@ async def fetch_repo_branches(repo_url):
 # App functions
 
 
-@app.on_callback_query(filters.regex(r"^app:(.+)") & filters.user(SUDOERS))
+@app.on_callback_query(filters.regex(r"^app:(.+)") & SUDOERS)
 async def app_options(client, callback_query):
     app_name = callback_query.data.split(":")[1]
 
@@ -265,7 +264,7 @@ async def app_options(client, callback_query):
 
 
 # Callback for "Re-Deploy" button
-@app.on_callback_query(filters.regex(r"^redeploy:(.+)") & filters.user(SUDOERS))
+@app.on_callback_query(filters.regex(r"^redeploy:(.+)") & SUDOERS)
 async def redeploy_callback(client, callback_query):
     app_name = callback_query.data.split(":")[1]
     # Show the user options for redeployment
@@ -296,7 +295,7 @@ async def redeploy_callback(client, callback_query):
 
 
 # Callback for using UPSTREAM_REPO
-@app.on_callback_query(filters.regex(r"^use_upstream_repo:(.+)") & filters.user(SUDOERS))
+@app.on_callback_query(filters.regex(r"^use_upstream_repo:(.+)") & SUDOERS)
 async def use_upstream_repo_callback(client, callback_query):
     chat_id = callback_query.message.chat.id
     app_name = callback_query.data.split(":")[1]
@@ -381,7 +380,7 @@ async def use_upstream_repo_callback(client, callback_query):
 
 
 # Callback for using an external repository
-@app.on_callback_query(filters.regex(r"^use_external_repo:(.+)") & filters.user(SUDOERS))
+@app.on_callback_query(filters.regex(r"^use_external_repo:(.+)") & SUDOERS)
 async def use_external_repo_callback(client, callback_query):
     app_name = callback_query.data.split(":")[1]
 
@@ -492,14 +491,14 @@ async def use_external_repo_callback(client, callback_query):
 
 
 # Cancel the redeployment process
-@app.on_callback_query(filters.regex("cancel_redeploy") & filters.user(SUDOERS))
+@app.on_callback_query(filters.regex("cancel_redeploy") & SUDOERS)
 async def cancel_redeploy_callback(client, callback_query):
     await callback_query.message.edit_text(
         convert_to_small_caps("Redeployment process canceled.")
     )
 
 
-@app.on_callback_query(filters.regex("show_apps") & filters.user(SUDOERS))
+@app.on_callback_query(filters.regex("show_apps") & SUDOERS)
 async def show_apps(client, callback_query):
     apps = await fetch_apps()
 
@@ -532,7 +531,7 @@ async def show_apps(client, callback_query):
     )
 
 
-@app.on_callback_query(filters.regex(r"^main_menu$") & filters.user(SUDOERS))
+@app.on_callback_query(filters.regex(r"^main_menu$") & SUDOERS)
 async def main_menu(client, callback_query):
     buttons = [
         [
@@ -549,7 +548,7 @@ async def main_menu(client, callback_query):
 
 
 # Handle logs fetching
-@app.on_callback_query(filters.regex(r"^get_logs:(.+)") & filters.user(SUDOERS))
+@app.on_callback_query(filters.regex(r"^get_logs:(.+)") & SUDOERS)
 async def get_app_logs(client, callback_query):
     app_name = callback_query.data.split(":")[1]
 
@@ -583,7 +582,7 @@ async def get_app_logs(client, callback_query):
 
 
 # Manage Dynos
-@app.on_callback_query(filters.regex(r"^manage_dynos:(.+)") & filters.user(SUDOERS))
+@app.on_callback_query(filters.regex(r"^manage_dynos:(.+)") & SUDOERS)
 async def manage_dynos(client, callback_query):
     app_name = callback_query.data.split(":")[1]
 
@@ -617,7 +616,7 @@ async def manage_dynos(client, callback_query):
 
 
 # Turn On Dynos
-@app.on_callback_query(filters.regex(r"^dyno_on:(.+)") & filters.user(SUDOERS))
+@app.on_callback_query(filters.regex(r"^dyno_on:(.+)") & SUDOERS)
 async def turn_on_dynos(client, callback_query):
     app_name = callback_query.data.split(":")[1]
 
@@ -652,7 +651,7 @@ async def turn_on_dynos(client, callback_query):
 
 
 # Turn Off Dynos
-@app.on_callback_query(filters.regex(r"^dyno_off:(.+)") & filters.user(SUDOERS))
+@app.on_callback_query(filters.regex(r"^dyno_off:(.+)") & SUDOERS)
 async def turn_off_dynos(client, callback_query):
     app_name = callback_query.data.split(":")[1]
 
@@ -687,7 +686,7 @@ async def turn_off_dynos(client, callback_query):
 
 
 # 2. Manage Dyno Type: Displaying Basic, Eco, and Professional options
-@app.on_callback_query(filters.regex(r"^manage_dyno_type:(.+)") & filters.user(SUDOERS))
+@app.on_callback_query(filters.regex(r"^manage_dyno_type:(.+)") & SUDOERS)
 async def manage_dyno_type(client, callback_query):
     app_name = callback_query.data.split(":")[1]
 
@@ -724,7 +723,7 @@ async def manage_dyno_type(client, callback_query):
 
 
 # 3. Displaying Professional Options: Standard 1X and Standard 2X
-@app.on_callback_query(filters.regex(r"^professional_options:(.+)") & filters.user(SUDOERS))
+@app.on_callback_query(filters.regex(r"^professional_options:(.+)") & SUDOERS)
 async def professional_options(client, callback_query):
     app_name = callback_query.data.split(":")[1]
 
@@ -768,7 +767,7 @@ def set_dyno_type(app_name, dyno_type):
     return status, result
 
 
-@app.on_callback_query(filters.regex(r"^set_dyno_basic:(.+)") & filters.user(SUDOERS))
+@app.on_callback_query(filters.regex(r"^set_dyno_basic:(.+)") & SUDOERS)
 async def set_dyno_basic(client, callback_query):
     app_name = callback_query.data.split(":")[1]
     status, result = set_dyno_type(app_name, "basic")
@@ -793,7 +792,7 @@ async def set_dyno_basic(client, callback_query):
     )
 
 
-@app.on_callback_query(filters.regex(r"^set_dyno_eco:(.+)") & filters.user(SUDOERS))
+@app.on_callback_query(filters.regex(r"^set_dyno_eco:(.+)") & SUDOERS)
 async def set_dyno_eco(client, callback_query):
     app_name = callback_query.data.split(":")[1]
     status, result = set_dyno_type(app_name, "eco")
@@ -818,7 +817,7 @@ async def set_dyno_eco(client, callback_query):
     )
 
 
-@app.on_callback_query(filters.regex(r"^set_dyno_prof_1x:(.+)") & filters.user(SUDOERS))
+@app.on_callback_query(filters.regex(r"^set_dyno_prof_1x:(.+)") & SUDOERS)
 async def set_dyno_prof_1x(client, callback_query):
     app_name = callback_query.data.split(":")[1]
     status, result = set_dyno_type(app_name, "standard-1X")
@@ -843,7 +842,7 @@ async def set_dyno_prof_1x(client, callback_query):
     )
 
 
-@app.on_callback_query(filters.regex(r"^set_dyno_prof_2x:(.+)") & filters.user(SUDOERS))
+@app.on_callback_query(filters.regex(r"^set_dyno_prof_2x:(.+)") & SUDOERS)
 async def set_dyno_prof_2x(client, callback_query):
     app_name = callback_query.data.split(":")[1]
     status, result = set_dyno_type(app_name, "standard-2X")
@@ -869,7 +868,7 @@ async def set_dyno_prof_2x(client, callback_query):
 
 
 # Restart All Dynos
-@app.on_callback_query(filters.regex(r"^restart_dynos:(.+)") & filters.user(SUDOERS))
+@app.on_callback_query(filters.regex(r"^restart_dynos:(.+)") & SUDOERS)
 async def restart_dynos(client, callback_query):
     app_name = callback_query.data.split(":")[1]
 
@@ -891,13 +890,13 @@ async def restart_dynos(client, callback_query):
 
 
 # Handle Back Button
-@app.on_callback_query(filters.regex(r"back_to_apps") & filters.user(SUDOERS))
+@app.on_callback_query(filters.regex(r"back_to_apps") & SUDOERS)
 async def back_to_apps(client, callback_query):
     await get_deployed_apps(client, callback_query.message)
 
 
 # Edit Environment Variables
-@app.on_callback_query(filters.regex(r"^edit_vars:(.+)") & filters.user(SUDOERS))
+@app.on_callback_query(filters.regex(r"^edit_vars:(.+)") & SUDOERS)
 async def edit_vars(client, callback_query):
     app_name = callback_query.data.split(":")[1]
 
@@ -955,7 +954,7 @@ async def edit_vars(client, callback_query):
         )
 
 
-@app.on_callback_query(filters.regex(r"^edit_var:(.+):(.+)") & filters.user(SUDOERS))
+@app.on_callback_query(filters.regex(r"^edit_var:(.+):(.+)") & SUDOERS)
 async def edit_variable_options(client, callback_query):
     app_name, var_name = callback_query.data.split(":")[1:3]
 
@@ -987,7 +986,7 @@ async def edit_variable_options(client, callback_query):
 
 
 # Step 1: Ask for the new value and then confirm with the user
-@app.on_callback_query(filters.regex(r"^edit_var_value:(.+):(.+)") & filters.user(SUDOERS))
+@app.on_callback_query(filters.regex(r"^edit_var_value:(.+):(.+)") & SUDOERS)
 async def edit_variable_value(client, callback_query):
     app_name, var_name = callback_query.data.split(":")[1:3]
 
@@ -1083,7 +1082,7 @@ async def save_variable_value(client, callback_query, app_name, var_name, new_va
 
 
 # Step 1: Confirmation before deleting a variable
-@app.on_callback_query(filters.regex(r"^delete_var:(.+):(.+)") & filters.user(SUDOERS))
+@app.on_callback_query(filters.regex(r"^delete_var:(.+):(.+)") & SUDOERS)
 async def delete_variable_confirmation(client, callback_query):
     app_name, var_name = callback_query.data.split(":")[1:3]
 
@@ -1110,7 +1109,7 @@ async def delete_variable_confirmation(client, callback_query):
 
 
 # Step 2: If the user clicks Yes, delete the variable
-@app.on_callback_query(filters.regex(r"^confirm_delete_var:(.+):(.+)") & filters.user(SUDOERS))
+@app.on_callback_query(filters.regex(r"^confirm_delete_var:(.+):(.+)") & SUDOERS)
 async def confirm_delete_variable(client, callback_query):
     app_name, var_name = callback_query.data.split(":")[1:3]
 
@@ -1145,7 +1144,7 @@ async def confirm_delete_variable(client, callback_query):
 
 
 # Step 3: If the user clicks No, cancel the delete operation
-@app.on_callback_query(filters.regex(r"^cancel_delete_var:(.+)") & filters.user(SUDOERS))
+@app.on_callback_query(filters.regex(r"^cancel_delete_var:(.+)") & SUDOERS)
 async def cancel_delete_variable(client, callback_query):
     app_name = callback_query.data.split(":")[1]
 
@@ -1168,7 +1167,7 @@ async def cancel_delete_variable(client, callback_query):
 
 
 # Add New Variable
-@app.on_callback_query(filters.regex(r"^add_var:(.+)") & filters.user(SUDOERS))
+@app.on_callback_query(filters.regex(r"^add_var:(.+)") & SUDOERS)
 async def add_new_variable(client, callback_query):
     app_name = callback_query.data.split(":")[1]
 
@@ -1304,7 +1303,7 @@ async def save_new_variable_value(
 
 
 # Handle the callback when an app is selected for deletion
-@app.on_callback_query(filters.regex(r"^delete_app:(.+)") & filters.user(SUDOERS))
+@app.on_callback_query(filters.regex(r"^delete_app:(.+)") & SUDOERS)
 async def confirm_app_deletion(client, callback_query):
     app_name = callback_query.data.split(":")[1]
 
@@ -1336,7 +1335,7 @@ async def confirm_app_deletion(client, callback_query):
 
 
 # Handle the confirmation for app deletion
-@app.on_callback_query(filters.regex(r"^confirm_delete:(.+)") & filters.user(SUDOERS))
+@app.on_callback_query(filters.regex(r"^confirm_delete:(.+)") & SUDOERS)
 async def delete_app_from_heroku(client, callback_query):
     app_name = callback_query.data.split(":")[1]
     ok = await delete_app_info(callback_query.from_user.id, app_name)
@@ -1367,7 +1366,7 @@ async def delete_app_from_heroku(client, callback_query):
 
 
 # Handle the cancellation of app deletion
-@app.on_callback_query(filters.regex(r"cancel_delete") & filters.user(SUDOERS))
+@app.on_callback_query(filters.regex(r"cancel_delete") & SUDOERS)
 async def cancel_app_deletion(client, callback_query):
     buttons = [
         [
