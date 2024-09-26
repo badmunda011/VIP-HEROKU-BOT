@@ -16,7 +16,7 @@ async def main():
 
     await idle()
     print("Bot Stopped.....")
-    await app.stop()
+    
 
 
 if __name__ == "__main__":
