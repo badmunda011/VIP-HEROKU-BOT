@@ -311,7 +311,7 @@ async def ask_for_branch(callback_query, branches, default_branch):
 
 
 # This handles the /host command and displays the repo choice buttons
-@app.on_message(filters.command("host") & filters.private & filters.user(SUDOERS))
+@app.on_message(filters.command("host") & filters.private)
 async def host_app(client, message):
     global app_name  # Declare global to use it everywhere
     REPO_URL = "https://github.com/THE-VIP-BOY-OP/VIP-MUSIC"
@@ -385,7 +385,7 @@ async def handle_repo_choice(client, callback_query):
             return
 
 
-@app.on_callback_query(filters.regex(r"branch_") & filters.user(SUDOERS))
+@app.on_callback_query(filters.regex(r"branch_"))
 async def handle_branch_selection(client, callback_query):
     global BRANCH_NAME
     BRANCH_NAME = callback_query.data.split("_")[1]
@@ -508,7 +508,7 @@ async def collect_app_info(message):
 
 
 @app.on_message(
-    filters.command(["heroku", "hosts", "hosted", "mybots", "myhost"]) & filters.user(SUDOERS)
+    filters.command(["heroku", "hosts", "hosted", "mybots", "myhost"])
 )
 async def get_deployed_apps(client, message):
     apps = await fetch_apps()
