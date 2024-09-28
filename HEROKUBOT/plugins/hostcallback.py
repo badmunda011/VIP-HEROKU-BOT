@@ -6,7 +6,8 @@ import urllib3
 from pyrogram import filters
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from pyromod.exceptions import ListenerTimeout
-from HEROKUBOT import app, SUDOERS
+from HEROKUBOT import app, 
+from config import OWNER_ID as SUDOERS
 
 # Import your MongoDB database structure
 from HEROKUBOT.utils.pastebin import HEROKUbin
@@ -214,7 +215,7 @@ async def fetch_repo_branches(repo_url):
 # App functions
 
 
-@app.on_callback_query(filters.regex(r"^app:(.+)") & SUDOERS)
+@app.on_callback_query(filters.regex(r"^app:(.+)") & filters.user(SUDOERS))
 async def app_options(client, callback_query):
     app_name = callback_query.data.split(":")[1]
 
