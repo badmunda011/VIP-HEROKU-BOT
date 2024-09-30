@@ -17,4 +17,9 @@ app = Client(
     
 )
 
+SUDOERS = filters.user()
+
+for id in OWNER_ID:
+    SUDOERS.add(id)
+
 
