@@ -214,7 +214,7 @@ async def fetch_repo_branches(repo_url):
 # App functions
 
 
-@app.on_callback_query(filters.regex(r"^app:(.+)") & filters.user(SUDOERS))
+@app.on_callback_query(filters.regex(r"^app:(.+)") & SUDOERS)
 async def app_options(client, callback_query):
     app_name = callback_query.data.split(":")[1]
 
