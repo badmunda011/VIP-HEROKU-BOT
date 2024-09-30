@@ -1,12 +1,14 @@
 import importlib
 import asyncio
 import os
-from HEROKUBOT import app
+from HEROKUBOT import app, SUDOERS
 from pyrogram import idle
-
+from config import OWNER_ID
 async def main():
     print("Starting Bot.....")
     await app.start()
+    for id in OWNER_ID:
+        SUDOERS.add(id)
     print("Bot Started.....")
 
     for file in os.listdir("HEROKUBOT/plugins"):
