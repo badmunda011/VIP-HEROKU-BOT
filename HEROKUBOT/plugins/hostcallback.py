@@ -6,10 +6,10 @@ import urllib3
 from pyrogram import filters
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from pyromod.exceptions import ListenerTimeout
-from HEROKUBOT import app, SUDOERS
+
+from HEROKUBOT import app
 
 # Import your MongoDB database structure
-from HEROKUBOT.utils.pastebin import HEROKUbin
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -214,7 +214,7 @@ async def fetch_repo_branches(repo_url):
 # App functions
 
 
-@app.on_callback_query(filters.regex(r"^app:(.+)") & SUDOERS)
+@app.on_callback_query(filters.regex(r"^app:(.+)") & filters.user)
 async def app_options(client, callback_query):
     app_name = callback_query.data.split(":")[1]
 
@@ -264,7 +264,7 @@ async def app_options(client, callback_query):
 
 
 # Callback for "Re-Deploy" button
-@app.on_callback_query(filters.regex(r"^redeploy:(.+)") & SUDOERS)
+@app.on_callback_query(filters.regex(r"^redeploy:(.+)") & filters.user)
 async def redeploy_callback(client, callback_query):
     app_name = callback_query.data.split(":")[1]
     # Show the user options for redeployment
@@ -295,7 +295,7 @@ async def redeploy_callback(client, callback_query):
 
 
 # Callback for using UPSTREAM_REPO
-@app.on_callback_query(filters.regex(r"^use_upstream_repo:(.+)") & SUDOERS)
+@app.on_callback_query(filters.regex(r"^use_upstream_repo:(.+)") & filters.user)
 async def use_upstream_repo_callback(client, callback_query):
     chat_id = callback_query.message.chat.id
     app_name = callback_query.data.split(":")[1]
@@ -317,8 +317,8 @@ async def use_upstream_repo_callback(client, callback_query):
                 timeout=300,
             )
 
-            # Check if the user is in SUDOERS and the correct chat
-            if response.from_user.id not in SUDOERS or response.chat.id != chat_id:
+            # Check if the user is in filters.user and the correct chat
+            if response.from_user.id not in filters.user or response.chat.id != chat_id:
                 return await app.send_message(
                     chat_id,
                     convert_to_small_caps("Try Again Please And Give Fast Reply"),
@@ -337,7 +337,7 @@ async def use_upstream_repo_callback(client, callback_query):
                 )
 
                 if (
-                    confirmation.from_user.id not in SUDOERS
+                    confirmation.from_user.id not in filters.user
                     or confirmation.chat.id != chat_id
                 ):
                     return await app.send_message(
@@ -380,7 +380,7 @@ async def use_upstream_repo_callback(client, callback_query):
 
 
 # Callback for using an external repository
-@app.on_callback_query(filters.regex(r"^use_external_repo:(.+)") & SUDOERS)
+@app.on_callback_query(filters.regex(r"^use_external_repo:(.+)") & filters.user)
 async def use_external_repo_callback(client, callback_query):
     app_name = callback_query.data.split(":")[1]
 
@@ -392,7 +392,7 @@ async def use_external_repo_callback(client, callback_query):
         )
 
         if (
-            response.from_user.id not in SUDOERS
+            response.from_user.id not in filters.user
             or response.chat.id != callback_query.message.chat.id
         ):
             return await app.send_message(
@@ -400,7 +400,7 @@ async def use_external_repo_callback(client, callback_query):
                 convert_to_small_caps("Try Again Please And Give Fast Reply"),
             )
 
-        if response.from_user.id in SUDOERS:
+        if response.from_user.id in filters.user:
             new_repo_url = response.text
 
             # Fetch branches from the provided repo URL
@@ -418,7 +418,7 @@ async def use_external_repo_callback(client, callback_query):
                 )
 
                 if (
-                    response.from_user.id not in SUDOERS
+                    response.from_user.id not in filters.user
                     or response.chat.id != response.chat.id
                 ):
                     return await app.send_message(
@@ -438,7 +438,7 @@ async def use_external_repo_callback(client, callback_query):
                     )
 
                     if (
-                        confirmation.from_user.id not in SUDOERS
+                        confirmation.from_user.id not in filters.user
                         or response.chat.id != branch_response.chat.id
                     ):
                         return await app.send_message(
@@ -483,7 +483,7 @@ async def use_external_repo_callback(client, callback_query):
     except ListenerTimeout:
         await callback_query.message.reply_text(
             convert_to_small_caps(
-                "**Timeout! No valid input received from SUDOERS. Process canceled.**"
+                "**Timeout! No valid input received from filters.user. Process canceled.**"
             )
         )
     except Exception as e:
@@ -491,14 +491,14 @@ async def use_external_repo_callback(client, callback_query):
 
 
 # Cancel the redeployment process
-@app.on_callback_query(filters.regex("cancel_redeploy") & SUDOERS)
+@app.on_callback_query(filters.regex("cancel_redeploy") & filters.user)
 async def cancel_redeploy_callback(client, callback_query):
     await callback_query.message.edit_text(
         convert_to_small_caps("Redeployment process canceled.")
     )
 
 
-@app.on_callback_query(filters.regex("show_apps") & SUDOERS)
+@app.on_callback_query(filters.regex("show_apps") & filters.user)
 async def show_apps(client, callback_query):
     apps = await fetch_apps()
 
@@ -531,7 +531,7 @@ async def show_apps(client, callback_query):
     )
 
 
-@app.on_callback_query(filters.regex(r"^main_menu$") & SUDOERS)
+@app.on_callback_query(filters.regex(r"^main_menu$") & filters.user)
 async def main_menu(client, callback_query):
     buttons = [
         [
@@ -548,7 +548,7 @@ async def main_menu(client, callback_query):
 
 
 # Handle logs fetching
-@app.on_callback_query(filters.regex(r"^get_logs:(.+)") & SUDOERS)
+@app.on_callback_query(filters.regex(r"^get_logs:(.+)") & filters.user)
 async def get_app_logs(client, callback_query):
     app_name = callback_query.data.split(":")[1]
 
@@ -582,7 +582,7 @@ async def get_app_logs(client, callback_query):
 
 
 # Manage Dynos
-@app.on_callback_query(filters.regex(r"^manage_dynos:(.+)") & SUDOERS)
+@app.on_callback_query(filters.regex(r"^manage_dynos:(.+)") & filters.user)
 async def manage_dynos(client, callback_query):
     app_name = callback_query.data.split(":")[1]
 
@@ -616,7 +616,7 @@ async def manage_dynos(client, callback_query):
 
 
 # Turn On Dynos
-@app.on_callback_query(filters.regex(r"^dyno_on:(.+)") & SUDOERS)
+@app.on_callback_query(filters.regex(r"^dyno_on:(.+)") & filters.user)
 async def turn_on_dynos(client, callback_query):
     app_name = callback_query.data.split(":")[1]
 
@@ -651,7 +651,7 @@ async def turn_on_dynos(client, callback_query):
 
 
 # Turn Off Dynos
-@app.on_callback_query(filters.regex(r"^dyno_off:(.+)") & SUDOERS)
+@app.on_callback_query(filters.regex(r"^dyno_off:(.+)") & filters.user)
 async def turn_off_dynos(client, callback_query):
     app_name = callback_query.data.split(":")[1]
 
@@ -686,7 +686,7 @@ async def turn_off_dynos(client, callback_query):
 
 
 # 2. Manage Dyno Type: Displaying Basic, Eco, and Professional options
-@app.on_callback_query(filters.regex(r"^manage_dyno_type:(.+)") & SUDOERS)
+@app.on_callback_query(filters.regex(r"^manage_dyno_type:(.+)") & filters.user)
 async def manage_dyno_type(client, callback_query):
     app_name = callback_query.data.split(":")[1]
 
@@ -723,7 +723,7 @@ async def manage_dyno_type(client, callback_query):
 
 
 # 3. Displaying Professional Options: Standard 1X and Standard 2X
-@app.on_callback_query(filters.regex(r"^professional_options:(.+)") & SUDOERS)
+@app.on_callback_query(filters.regex(r"^professional_options:(.+)") & filters.user)
 async def professional_options(client, callback_query):
     app_name = callback_query.data.split(":")[1]
 
@@ -767,7 +767,7 @@ def set_dyno_type(app_name, dyno_type):
     return status, result
 
 
-@app.on_callback_query(filters.regex(r"^set_dyno_basic:(.+)") & SUDOERS)
+@app.on_callback_query(filters.regex(r"^set_dyno_basic:(.+)") & filters.user)
 async def set_dyno_basic(client, callback_query):
     app_name = callback_query.data.split(":")[1]
     status, result = set_dyno_type(app_name, "basic")
@@ -792,7 +792,7 @@ async def set_dyno_basic(client, callback_query):
     )
 
 
-@app.on_callback_query(filters.regex(r"^set_dyno_eco:(.+)") & SUDOERS)
+@app.on_callback_query(filters.regex(r"^set_dyno_eco:(.+)") & filters.user)
 async def set_dyno_eco(client, callback_query):
     app_name = callback_query.data.split(":")[1]
     status, result = set_dyno_type(app_name, "eco")
@@ -817,7 +817,7 @@ async def set_dyno_eco(client, callback_query):
     )
 
 
-@app.on_callback_query(filters.regex(r"^set_dyno_prof_1x:(.+)") & SUDOERS)
+@app.on_callback_query(filters.regex(r"^set_dyno_prof_1x:(.+)") & filters.user)
 async def set_dyno_prof_1x(client, callback_query):
     app_name = callback_query.data.split(":")[1]
     status, result = set_dyno_type(app_name, "standard-1X")
@@ -842,7 +842,7 @@ async def set_dyno_prof_1x(client, callback_query):
     )
 
 
-@app.on_callback_query(filters.regex(r"^set_dyno_prof_2x:(.+)") & SUDOERS)
+@app.on_callback_query(filters.regex(r"^set_dyno_prof_2x:(.+)") & filters.user)
 async def set_dyno_prof_2x(client, callback_query):
     app_name = callback_query.data.split(":")[1]
     status, result = set_dyno_type(app_name, "standard-2X")
@@ -868,7 +868,7 @@ async def set_dyno_prof_2x(client, callback_query):
 
 
 # Restart All Dynos
-@app.on_callback_query(filters.regex(r"^restart_dynos:(.+)") & SUDOERS)
+@app.on_callback_query(filters.regex(r"^restart_dynos:(.+)") & filters.user)
 async def restart_dynos(client, callback_query):
     app_name = callback_query.data.split(":")[1]
 
@@ -890,13 +890,13 @@ async def restart_dynos(client, callback_query):
 
 
 # Handle Back Button
-@app.on_callback_query(filters.regex(r"back_to_apps") & SUDOERS)
+@app.on_callback_query(filters.regex(r"back_to_apps") & filters.user)
 async def back_to_apps(client, callback_query):
     await get_deployed_apps(client, callback_query.message)
 
 
 # Edit Environment Variables
-@app.on_callback_query(filters.regex(r"^edit_vars:(.+)") & SUDOERS)
+@app.on_callback_query(filters.regex(r"^edit_vars:(.+)") & filters.user)
 async def edit_vars(client, callback_query):
     app_name = callback_query.data.split(":")[1]
 
@@ -954,7 +954,7 @@ async def edit_vars(client, callback_query):
         )
 
 
-@app.on_callback_query(filters.regex(r"^edit_var:(.+):(.+)") & SUDOERS)
+@app.on_callback_query(filters.regex(r"^edit_var:(.+):(.+)") & filters.user)
 async def edit_variable_options(client, callback_query):
     app_name, var_name = callback_query.data.split(":")[1:3]
 
@@ -986,7 +986,7 @@ async def edit_variable_options(client, callback_query):
 
 
 # Step 1: Ask for the new value and then confirm with the user
-@app.on_callback_query(filters.regex(r"^edit_var_value:(.+):(.+)") & SUDOERS)
+@app.on_callback_query(filters.regex(r"^edit_var_value:(.+):(.+)") & filters.user)
 async def edit_variable_value(client, callback_query):
     app_name, var_name = callback_query.data.split(":")[1:3]
 
@@ -997,25 +997,25 @@ async def edit_variable_value(client, callback_query):
                 response = await app.ask(
                     callback_query.message.chat.id,
                     convert_to_small_caps(
-                        f"**Send the new value for** `{var_name}` **within 1 minute (Only SUDOERS allowed)**:"
+                        f"**Send the new value for** `{var_name}` **within 1 minute (Only filters.user allowed)**:"
                     ),
                     timeout=60,
                 )
 
-                if response.from_user.id in SUDOERS:
+                if response.from_user.id in filters.user:
                     new_value = response.text
                 else:
                     await app.send_message(
                         callback_query.message.chat.id,
                         convert_to_small_caps(
-                            "Only SUDOERS can provide a valid input. Please try again."
+                            "Only filters.user can provide a valid input. Please try again."
                         ),
                     )
 
             except ListenerTimeout:
                 await callback_query.message.reply_text(
                     convert_to_small_caps(
-                        "**Timeout! No valid input received from SUDOERS. Process canceled.**"
+                        "**Timeout! No valid input received from filters.user. Process canceled.**"
                     )
                 )
                 return
@@ -1034,11 +1034,11 @@ async def edit_variable_value(client, callback_query):
             timeout=60,
         )
 
-        if confirmation.from_user.id not in SUDOERS:
+        if confirmation.from_user.id not in filters.user:
             await app.send_message(
                 callback_query.message.chat.id,
                 convert_to_small_caps(
-                    "Only SUDOERS can confirm the input. Please try again."
+                    "Only filters.user can confirm the input. Please try again."
                 ),
             )
             return
@@ -1082,7 +1082,7 @@ async def save_variable_value(client, callback_query, app_name, var_name, new_va
 
 
 # Step 1: Confirmation before deleting a variable
-@app.on_callback_query(filters.regex(r"^delete_var:(.+):(.+)") & SUDOERS)
+@app.on_callback_query(filters.regex(r"^delete_var:(.+):(.+)") & filters.user)
 async def delete_variable_confirmation(client, callback_query):
     app_name, var_name = callback_query.data.split(":")[1:3]
 
@@ -1109,7 +1109,7 @@ async def delete_variable_confirmation(client, callback_query):
 
 
 # Step 2: If the user clicks Yes, delete the variable
-@app.on_callback_query(filters.regex(r"^confirm_delete_var:(.+):(.+)") & SUDOERS)
+@app.on_callback_query(filters.regex(r"^confirm_delete_var:(.+):(.+)") & filters.user)
 async def confirm_delete_variable(client, callback_query):
     app_name, var_name = callback_query.data.split(":")[1:3]
 
@@ -1144,7 +1144,7 @@ async def confirm_delete_variable(client, callback_query):
 
 
 # Step 3: If the user clicks No, cancel the delete operation
-@app.on_callback_query(filters.regex(r"^cancel_delete_var:(.+)") & SUDOERS)
+@app.on_callback_query(filters.regex(r"^cancel_delete_var:(.+)") & filters.user)
 async def cancel_delete_variable(client, callback_query):
     app_name = callback_query.data.split(":")[1]
 
@@ -1167,25 +1167,25 @@ async def cancel_delete_variable(client, callback_query):
 
 
 # Add New Variable
-@app.on_callback_query(filters.regex(r"^add_var:(.+)") & SUDOERS)
+@app.on_callback_query(filters.regex(r"^add_var:(.+)") & filters.user)
 async def add_new_variable(client, callback_query):
     app_name = callback_query.data.split(":")[1]
 
     try:
-        # Step 1: Ask for variable name from SUDOERS
+        # Step 1: Ask for variable name from filters.user
         var_name = None
         while var_name is None:
             try:
                 response = await app.ask(
                     callback_query.message.chat.id,
                     convert_to_small_caps(
-                        "**Please send the new variable name (Only SUDOERS allowed)**:"
+                        "**Please send the new variable name (Only filters.user allowed)**:"
                     ),
                     timeout=300,
                 )
 
                 if (
-                    response.from_user.id in SUDOERS
+                    response.from_user.id in filters.user
                     and response.chat.id == callback_query.message.chat.id
                 ):
                     var_name = response.text
@@ -1193,44 +1193,44 @@ async def add_new_variable(client, callback_query):
                     await app.send_message(
                         callback_query.message.chat.id,
                         convert_to_small_caps(
-                            "Only SUDOERS can provide a valid input. Please try again."
+                            "Only filters.user can provide a valid input. Please try again."
                         ),
                     )
 
             except ListenerTimeout:
                 await callback_query.message.reply_text(
                     convert_to_small_caps(
-                        "**Timeout! No valid input received from SUDOERS. Process canceled.**"
+                        "**Timeout! No valid input received from filters.user. Process canceled.**"
                     )
                 )
                 return
 
-        # Step 2: Ask for variable value from SUDOERS
+        # Step 2: Ask for variable value from filters.user
         var_value = None
         while var_value is None:
             try:
                 response = await app.ask(
                     callback_query.message.chat.id,
                     convert_to_small_caps(
-                        f"**Now send the value for `{var_name}` (Only SUDOERS allowed):**"
+                        f"**Now send the value for `{var_name}` (Only filters.user allowed):**"
                     ),
                     timeout=60,
                 )
 
-                if response.from_user.id in SUDOERS:
+                if response.from_user.id in filters.user:
                     var_value = response.text
                 else:
                     await app.send_message(
                         callback_query.message.chat.id,
                         convert_to_small_caps(
-                            "Only SUDOERS can provide a valid input. Please try again."
+                            "Only filters.user can provide a valid input. Please try again."
                         ),
                     )
 
             except ListenerTimeout:
                 await callback_query.message.reply_text(
                     convert_to_small_caps(
-                        "**Timeout! No valid input received from SUDOERS. Process canceled.**"
+                        "**Timeout! No valid input received from filters.user. Process canceled.**"
                     )
                 )
                 return
@@ -1249,12 +1249,12 @@ async def add_new_variable(client, callback_query):
             timeout=60,
         )
 
-        # Check if the response is from SUDOERS
-        if confirmation.from_user.id not in SUDOERS:
+        # Check if the response is from filters.user
+        if confirmation.from_user.id not in filters.user:
             await app.send_message(
                 callback_query.message.chat.id,
                 convert_to_small_caps(
-                    "Only SUDOERS can confirm the input. Please try again."
+                    "Only filters.user can confirm the input. Please try again."
                 ),
             )
             return
@@ -1303,7 +1303,7 @@ async def save_new_variable_value(
 
 
 # Handle the callback when an app is selected for deletion
-@app.on_callback_query(filters.regex(r"^delete_app:(.+)") & SUDOERS)
+@app.on_callback_query(filters.regex(r"^delete_app:(.+)") & filters.user)
 async def confirm_app_deletion(client, callback_query):
     app_name = callback_query.data.split(":")[1]
 
@@ -1335,7 +1335,7 @@ async def confirm_app_deletion(client, callback_query):
 
 
 # Handle the confirmation for app deletion
-@app.on_callback_query(filters.regex(r"^confirm_delete:(.+)") & SUDOERS)
+@app.on_callback_query(filters.regex(r"^confirm_delete:(.+)") & filters.user)
 async def delete_app_from_heroku(client, callback_query):
     app_name = callback_query.data.split(":")[1]
     ok = await delete_app_info(callback_query.from_user.id, app_name)
@@ -1366,7 +1366,7 @@ async def delete_app_from_heroku(client, callback_query):
 
 
 # Handle the cancellation of app deletion
-@app.on_callback_query(filters.regex(r"cancel_delete") & SUDOERS)
+@app.on_callback_query(filters.regex(r"cancel_delete") & filters.user)
 async def cancel_app_deletion(client, callback_query):
     buttons = [
         [

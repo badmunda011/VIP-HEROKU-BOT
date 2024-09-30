@@ -8,9 +8,9 @@ import urllib3
 from pyrogram import filters
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from pyromod.exceptions import ListenerTimeout
-from HEROKUBOT import app, SUDOERS
 
-from HEROKUBOT.utils.pastebin import HEROKUbin
+from HEROKUBOT import app
+
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 HEROKU_API_URL = "https://api.heroku.com"
@@ -310,14 +310,14 @@ async def ask_for_branch(callback_query, branches, default_branch):
 
 
 # This handles the /host command and displays the repo choice buttons
-@app.on_message(filters.command("host") & filters.private & SUDOERS)
+@app.on_message(filters.command("host") & filters.private & filters.user)
 async def host_app(client, message):
     global app_name  # Declare global to use it everywhere
     REPO_URL = "https://github.com/THE-VIP-BOY-OP/VIP-MUSIC"
     await ask_repo_choice(message)
 
 
-@app.on_callback_query(filters.regex(r"deploy_(upstream|external)") & SUDOERS)
+@app.on_callback_query(filters.regex(r"deploy_(upstream|external)") & filters.user)
 async def handle_repo_choice(client, callback_query):
     global REPO_URL
     choice = callback_query.data.split("_")[1]
@@ -384,7 +384,7 @@ async def handle_repo_choice(client, callback_query):
             return
 
 
-@app.on_callback_query(filters.regex(r"branch_") & SUDOERS)
+@app.on_callback_query(filters.regex(r"branch_") & filters.user)
 async def handle_branch_selection(client, callback_query):
     global BRANCH_NAME
     BRANCH_NAME = callback_query.data.split("_")[1]
@@ -507,7 +507,7 @@ async def collect_app_info(message):
 
 
 @app.on_message(
-    filters.command(["heroku", "hosts", "hosted", "mybots", "myhost"]) & SUDOERS
+    filters.command(["heroku", "hosts", "hosted", "mybots", "myhost"]) & filters.user
 )
 async def get_deployed_apps(client, message):
     apps = await fetch_apps()
@@ -540,7 +540,7 @@ async def get_deployed_apps(client, message):
 # ============================DELETE APP==================================#
 
 
-@app.on_message(filters.command("deletehost") & filters.private & SUDOERS)
+@app.on_message(filters.command("deletehost") & filters.private & filters.user)
 async def delete_deployed_app(client, message):
     # Fetch the list of deployed apps for the user
     user_apps = await fetch_apps()
