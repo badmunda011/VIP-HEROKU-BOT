@@ -11,8 +11,6 @@ from HEROKUBOT import app
 async def main():
     print("Starting Bot.....")
     await app.start()
-    for id in OWNER_ID:
-        filters.user.add(id)
     print("Bot Started.....")
 
     for file in os.listdir("HEROKUBOT/plugins"):
