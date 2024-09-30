@@ -1,7 +1,7 @@
 import os
 import logging
 from pyrogram import Client, filters
-from config import API_ID, API_HASH, BOT_TOKEN, OWNER_ID
+from config import API_ID, API_HASH, BOT_TOKEN
 import pyromod.listen  # Import pyromod listen
 
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
@@ -18,8 +18,5 @@ app = Client(
 )
 
 SUDOERS = filters.user()
-
-for id in OWNER_ID:
-    SUDOERS.add(id)
 
 
