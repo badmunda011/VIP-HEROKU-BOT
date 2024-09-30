@@ -8,7 +8,7 @@ from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from pyromod.exceptions import ListenerTimeout
 
 from HEROKUBOT import app
-
+from config import OWNER_ID as SUDOERS
 # Import your MongoDB database structure
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -262,38 +262,6 @@ async def app_options(client, callback_query):
         reply_markup=reply_markup,
     )
 
-
-# Callback for "Re-Deploy" button
-@app.on_callback_query(filters.regex(r"^redeploy:(.+)") & filters.user)
-async def redeploy_callback(client, callback_query):
-    app_name = callback_query.data.split(":")[1]
-    # Show the user options for redeployment
-    await callback_query.message.edit(
-        text=convert_to_small_caps("From where do you want to deploy?"),
-        reply_markup=InlineKeyboardMarkup(
-            [
-                [
-                    InlineKeyboardButton(
-                        convert_to_small_caps("Use UPSTREAM_REPO"),
-                        callback_data=f"use_upstream_repo:{app_name}",
-                    )
-                ],
-                [
-                    InlineKeyboardButton(
-                        convert_to_small_caps("Use External Repo"),
-                        callback_data=f"use_external_repo:{app_name}",
-                    )
-                ],
-                [
-                    InlineKeyboardButton(
-                        convert_to_small_caps("Back"), callback_data=f"app:{app_name}"
-                    )
-                ],
-            ]
-        ),
-    )
-
-
 # Callback for using UPSTREAM_REPO
 @app.on_callback_query(filters.regex(r"^use_upstream_repo:(.+)") & filters.user)
 async def use_upstream_repo_callback(client, callback_query):
@@ -317,8 +285,8 @@ async def use_upstream_repo_callback(client, callback_query):
                 timeout=300,
             )
 
-            # Check if the user is in filters.user and the correct chat
-            if response.from_user.id not in filters.user or response.chat.id != chat_id:
+
+            if response.from_user.id not in SUDOERS or response.chat.id != chat_id:
                 return await app.send_message(
                     chat_id,
                     convert_to_small_caps("Try Again Please And Give Fast Reply"),
@@ -337,7 +305,7 @@ async def use_upstream_repo_callback(client, callback_query):
                 )
 
                 if (
-                    confirmation.from_user.id not in filters.user
+                    confirmation.from_user.id not in SUDOERS
                     or confirmation.chat.id != chat_id
                 ):
                     return await app.send_message(
@@ -392,7 +360,7 @@ async def use_external_repo_callback(client, callback_query):
         )
 
         if (
-            response.from_user.id not in filters.user
+            response.from_user.id not in SUDOERS
             or response.chat.id != callback_query.message.chat.id
         ):
             return await app.send_message(
@@ -400,7 +368,7 @@ async def use_external_repo_callback(client, callback_query):
                 convert_to_small_caps("Try Again Please And Give Fast Reply"),
             )
 
-        if response.from_user.id in filters.user:
+        if response.from_user.id in SUDOERS:
             new_repo_url = response.text
 
             # Fetch branches from the provided repo URL
@@ -418,7 +386,7 @@ async def use_external_repo_callback(client, callback_query):
                 )
 
                 if (
-                    response.from_user.id not in filters.user
+                    response.from_user.id not in SUDOERS
                     or response.chat.id != response.chat.id
                 ):
                     return await app.send_message(
@@ -438,7 +406,7 @@ async def use_external_repo_callback(client, callback_query):
                     )
 
                     if (
-                        confirmation.from_user.id not in filters.user
+                        confirmation.from_user.id not in SUDOERS
                         or response.chat.id != branch_response.chat.id
                     ):
                         return await app.send_message(
@@ -483,11 +451,43 @@ async def use_external_repo_callback(client, callback_query):
     except ListenerTimeout:
         await callback_query.message.reply_text(
             convert_to_small_caps(
-                "**Timeout! No valid input received from filters.user. Process canceled.**"
+                "**Timeout! No valid input received from SUDOERS. Process canceled.**"
             )
         )
     except Exception as e:
         await callback_query.message.reply_text(f"An error occurred: {e}")
+
+
+# Callback for "Re-Deploy" button
+@app.on_callback_query(filters.regex(r"^redeploy:(.+)") & filters.user)
+async def redeploy_callback(client, callback_query):
+    app_name = callback_query.data.split(":")[1]
+    # Show the user options for redeployment
+    await callback_query.message.edit(
+        text=convert_to_small_caps("From where do you want to deploy?"),
+        reply_markup=InlineKeyboardMarkup(
+            [
+                [
+                    InlineKeyboardButton(
+                        convert_to_small_caps("Use UPSTREAM_REPO"),
+                        callback_data=f"use_upstream_repo:{app_name}",
+                    )
+                ],
+                [
+                    InlineKeyboardButton(
+                        convert_to_small_caps("Use External Repo"),
+                        callback_data=f"use_external_repo:{app_name}",
+                    )
+                ],
+                [
+                    InlineKeyboardButton(
+                        convert_to_small_caps("Back"), callback_data=f"app:{app_name}"
+                    )
+                ],
+            ]
+        ),
+    )
+
 
 
 # Cancel the redeployment process
@@ -984,7 +984,6 @@ async def edit_variable_options(client, callback_query):
         reply_markup=reply_markup,
     )
 
-
 # Step 1: Ask for the new value and then confirm with the user
 @app.on_callback_query(filters.regex(r"^edit_var_value:(.+):(.+)") & filters.user)
 async def edit_variable_value(client, callback_query):
@@ -997,25 +996,25 @@ async def edit_variable_value(client, callback_query):
                 response = await app.ask(
                     callback_query.message.chat.id,
                     convert_to_small_caps(
-                        f"**Send the new value for** `{var_name}` **within 1 minute (Only filters.user allowed)**:"
+                        f"**Send the new value for** `{var_name}` **within 1 minute (Only SUDOERS allowed)**:"
                     ),
                     timeout=60,
                 )
 
-                if response.from_user.id in filters.user:
+                if response.from_user.id in SUDOERS:
                     new_value = response.text
                 else:
                     await app.send_message(
                         callback_query.message.chat.id,
                         convert_to_small_caps(
-                            "Only filters.user can provide a valid input. Please try again."
+                            "Only SUDOERS can provide a valid input. Please try again."
                         ),
                     )
 
             except ListenerTimeout:
                 await callback_query.message.reply_text(
                     convert_to_small_caps(
-                        "**Timeout! No valid input received from filters.user. Process canceled.**"
+                        "**Timeout! No valid input received from SUDOERS. Process canceled.**"
                     )
                 )
                 return
@@ -1034,11 +1033,11 @@ async def edit_variable_value(client, callback_query):
             timeout=60,
         )
 
-        if confirmation.from_user.id not in filters.user:
+        if confirmation.from_user.id not in SUDOERS:
             await app.send_message(
                 callback_query.message.chat.id,
                 convert_to_small_caps(
-                    "Only filters.user can confirm the input. Please try again."
+                    "Only SUDOERS can confirm the input. Please try again."
                 ),
             )
             return
@@ -1172,20 +1171,20 @@ async def add_new_variable(client, callback_query):
     app_name = callback_query.data.split(":")[1]
 
     try:
-        # Step 1: Ask for variable name from filters.user
+        # Step 1: Ask for variable name from SUDOERS
         var_name = None
         while var_name is None:
             try:
                 response = await app.ask(
                     callback_query.message.chat.id,
                     convert_to_small_caps(
-                        "**Please send the new variable name (Only filters.user allowed)**:"
+                        "**Please send the new variable name (Only SUDOERS allowed)**:"
                     ),
                     timeout=300,
                 )
 
                 if (
-                    response.from_user.id in filters.user
+                    response.from_user.id in SUDOERS
                     and response.chat.id == callback_query.message.chat.id
                 ):
                     var_name = response.text
@@ -1193,44 +1192,44 @@ async def add_new_variable(client, callback_query):
                     await app.send_message(
                         callback_query.message.chat.id,
                         convert_to_small_caps(
-                            "Only filters.user can provide a valid input. Please try again."
+                            "Only SUDOERS can provide a valid input. Please try again."
                         ),
                     )
 
             except ListenerTimeout:
                 await callback_query.message.reply_text(
                     convert_to_small_caps(
-                        "**Timeout! No valid input received from filters.user. Process canceled.**"
+                        "**Timeout! No valid input received from SUDOERS. Process canceled.**"
                     )
                 )
                 return
 
-        # Step 2: Ask for variable value from filters.user
+        # Step 2: Ask for variable value from SUDOERS
         var_value = None
         while var_value is None:
             try:
                 response = await app.ask(
                     callback_query.message.chat.id,
                     convert_to_small_caps(
-                        f"**Now send the value for `{var_name}` (Only filters.user allowed):**"
+                        f"**Now send the value for `{var_name}` (Only SUDOERS allowed):**"
                     ),
                     timeout=60,
                 )
 
-                if response.from_user.id in filters.user:
+                if response.from_user.id in SUDOERS:
                     var_value = response.text
                 else:
                     await app.send_message(
                         callback_query.message.chat.id,
                         convert_to_small_caps(
-                            "Only filters.user can provide a valid input. Please try again."
+                            "Only SUDOERS can provide a valid input. Please try again."
                         ),
                     )
 
             except ListenerTimeout:
                 await callback_query.message.reply_text(
                     convert_to_small_caps(
-                        "**Timeout! No valid input received from filters.user. Process canceled.**"
+                        "**Timeout! No valid input received from SUDOERS. Process canceled.**"
                     )
                 )
                 return
@@ -1249,12 +1248,12 @@ async def add_new_variable(client, callback_query):
             timeout=60,
         )
 
-        # Check if the response is from filters.user
-        if confirmation.from_user.id not in filters.user:
+        # Check if the response is from SUDOERS
+        if confirmation.from_user.id not in SUDOERS:
             await app.send_message(
                 callback_query.message.chat.id,
                 convert_to_small_caps(
-                    "Only filters.user can confirm the input. Please try again."
+                    "Only SUDOERS can confirm the input. Please try again."
                 ),
             )
             return
@@ -1277,8 +1276,7 @@ async def add_new_variable(client, callback_query):
         )
     except Exception as e:
         await callback_query.message.reply_text(f"An error occurred: {e}")
-
-
+        
 async def save_new_variable_value(
     client, callback_query, app_name, var_name, var_value
 ):
