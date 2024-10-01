@@ -22,4 +22,3 @@ app = Client(
     api_hash=API_HASH,
 )
 
-filters.user = filters.user()
